@@ -1,5 +1,6 @@
 #pragma once
 #include "quota_fabric/core/enums.hpp"
+#include "quota_fabric/core/hierarchy.hpp"
 
 namespace quota_fabric {
 
@@ -130,6 +131,15 @@ QF_ENUM_TRAITS(AgentState,
   case E::REGISTERED: return "REGISTERED";
   case E::ACTIVE: return "ACTIVE";
   case E::LOST: return "LOST";
+)
+
+QF_ENUM_TRAITS(TenantGroupKind,
+  case E::ORGANIZATION: return "ORGANIZATION";
+  case E::BUSINESS_UNIT: return "BUSINESS_UNIT";
+  case E::TEAM: return "TEAM";
+  case E::PROJECT: return "PROJECT";
+  case E::ENVIRONMENT: return "ENVIRONMENT";
+  case E::SERVICE_CLASS: return "SERVICE_CLASS";
 )
 
 #undef QF_ENUM_TRAITS

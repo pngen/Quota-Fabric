@@ -1,0 +1,21 @@
+step: starting coordinator
+step: coordinator started
+step: connecting client
+step: client connected
+step: ping done ok=1
+step: starting agents
+step: agent identities captured
+step: reserving under current authority
+step: reserve done ok=1
+step: agent restart boot: old=e2076d1e14d7070d591edf61c2d69d28 new=49272fe74145415fca9f109cea2cead6
+step: stale-epoch reservation ok=1
+step: refreshed auth, making fresh reserve
+step: fresh reserve ok=1
+step: making stale-boot observation
+step: stale-boot observation ok=1
+step: releasing old reservation
+step: envelope got ok=1
+[ ok ] multiprocess_restart_fencing
+[ ok ] multiprocess_three_runs
+
+=== 2 test(s), 0 failure(s) ===
