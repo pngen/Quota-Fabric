@@ -15,7 +15,7 @@ struct BigReader {
   const std::uint8_t* p; std::size_t n; std::size_t off = 0;
   bool u32(std::uint32_t* v) { if (off + 4 > n) return false; *v = (std::uint32_t(p[off]) << 24) | (std::uint32_t(p[off+1]) << 16) | (std::uint32_t(p[off+2]) << 8) | p[off+3]; off += 4; return true; }
   bool u16(std::uint16_t* v) { if (off + 2 > n) return false; *v = std::uint16_t((std::uint16_t(p[off]) << 8) | p[off+1]); off += 2; return true; }
-  bool u64(std::uint64_t* v) { if (off + 8 > n) return false; std::uint64_t r = 0; for (int i = 7; i >= 0; --i) r = (r << 8) | p[off+i]; off += 8; *v = r; return true; }
+  bool u64(std::uint64_t* v) { if (off + 8 > n) return false; std::uint64_t r = 0; for (int i = 0; i < 8; ++i) r = (r << 8) | p[off+i]; off += 8; *v = r; return true; }
   bool u8(std::uint8_t* v) { if (off + 1 > n) return false; *v = p[off++]; return true; }
 };
 }  // namespace

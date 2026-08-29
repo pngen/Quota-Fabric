@@ -33,6 +33,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 # Language / compiler configuration
 # ---------------------------------------------------------------------------
 include(GNUInstallDirs)
+include(CTest)
 include(CMakePackageConfigHelpers)
 
 # Warnings. We scope warning flags to CXX so they are NEVER forwarded to nvcc.
