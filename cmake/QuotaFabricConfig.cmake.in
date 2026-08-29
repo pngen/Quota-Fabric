@@ -1,0 +1,9 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+set(QuotaFabric_CUDA_FOUND @QuotaFabric_CUDA_FOUND@)
+
+include("${CMAKE_CURRENT_LIST_DIR}/QuotaFabricTargets.cmake")
+
+check_required_components(QuotaFabric)
