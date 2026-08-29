@@ -1,0 +1,3 @@
+add_executable(quota_fabric_bench bench.cpp)
+target_link_libraries(quota_fabric_bench PRIVATE quota_fabric_core)
+target_compile_features(quota_fabric_bench PRIVATE cxx_std_20)

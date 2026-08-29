@@ -78,3 +78,24 @@ endif()
 # Core library
 # ---------------------------------------------------------------------------
 add_subdirectory(src)
+
+# ---------------------------------------------------------------------------
+# Package config for find_package(QuotaFabric CONFIG REQUIRED)
+# ---------------------------------------------------------------------------
+set(QuotaFabric_INSTALL_CMAKEDIR "${CMAKE_INSTALL_LIBDIR}/cmake/QuotaFabric")
+configure_package_config_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/QuotaFabricConfig.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/QuotaFabricConfig.cmake"
+  INSTALL_DESTINATION "${QuotaFabric_INSTALL_CMAKEDIR}")
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/QuotaFabricConfigVersion.cmake"
+  VERSION "${PROJECT_VERSION}"
+  COMPATIBILITY SameMajorVersion)
+install(FILES
+  "${CMAKE_CURRENT_BINARY_DIR}/QuotaFabricConfig.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/QuotaFabricConfigVersion.cmake"
+  DESTINATION "${QuotaFabric_INSTALL_CMAKEDIR}")
+install(EXPORT QuotaFabricTargets
+  FILE QuotaFabricTargets.cmake
+  NAMESPACE QuotaFabric::
+  DESTINATION "${QuotaFabric_INSTALL_CMAKEDIR}")

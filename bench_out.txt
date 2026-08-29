@@ -1,0 +1,18 @@
+Quota Fabric benchmarks (completed work)
+bench: evaluation...
+quota evaluation: 200000 ops in 0.055 s = 3605403 ops/s (0.28 us/op)
+bench: reservation loop
+  res i=0
+  res i=10000
+  res i=20000
+  res i=30000
+  res i=40000
+  res i=50000
+  res i=60000
+  res i=70000
+  res i=80000
+  res i=90000
+reservation commit+release: 100000 ops (ok=100000) in 0.145 s = 689435 ops/s
+snapshot (100 tenants, 2000 live res): 2000 snapshots in 1.311 s = 1526 snapshots/s
+concurrent reservation churn: 4 threads x 20000 ops = 80000 ops in 0.145 s = 552999 ops/s
+persistence save: 500 writes in 0.459 s = 1090 writes/s

@@ -18,6 +18,7 @@ find_package(Threads REQUIRED)
 
 add_library(quota_fabric_core STATIC ${QUOTAFABRIC_CORE_SOURCES})
 add_library(QuotaFabric::core ALIAS quota_fabric_core)
+set_target_properties(quota_fabric_core PROPERTIES EXPORT_NAME core)
 target_include_directories(quota_fabric_core
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
@@ -43,6 +44,7 @@ if(QuotaFabric_CUDA_FOUND)
     target_link_libraries(quota_fabric_cuda PUBLIC quota_fabric_core)
     target_link_libraries(quota_fabric_cuda PUBLIC cudart)
     add_library(QuotaFabric::cuda ALIAS quota_fabric_cuda)
+    set_target_properties(quota_fabric_cuda PROPERTIES EXPORT_NAME cuda)
     target_compile_options(quota_fabric_cuda PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler=/EHsc>)
   endif()
 endif()

@@ -808,8 +808,12 @@ QuotaStatus QuotaFabric::release(ReservationId rid, const Authority& auth) {
   for (auto& [aid, a] : impl_->allocations_) {
     if (a.reservation == rid) a.active = false;
   }
-  impl_->sync_usage(r.tenant);
-  impl_->emit_event(EventType::RELEASE, r.tenant, "reservation released");
+  const TenantId tenant = r.tenant;
+  // prune the released reservation so usage sync stays bounded (released != live)
+  impl_->reservations_.erase(rid);
+  impl_->funding_.erase(rid);
+  impl_->sync_usage(tenant);
+  impl_->emit_event(EventType::RELEASE, tenant, "reservation released");
   return QuotaStatus::success();
 }
 QuotaStatus QuotaFabric::release_allocation(AllocationId aid, const Authority& auth) {
@@ -969,13 +973,15 @@ QuotaStatus QuotaFabric::apply_observation(const Observation& obs) {
     case ObservationKind::COMPUTE_INTERVAL: {
       if (obs.dimension != ResourceDimension::AcceleratorComputeTime) return QuotaStatus::failure(ViolationCode::INVALID_SHARED_ATTRIBUTION, "compute interval on wrong dimension");
       auto& w = u.windows[idx];
-      w.window_ns = impl_->settings.max_window_samples <= 0 ? w.window_ns : (w.window_ns > 0 ? w.window_ns : std::int64_t(3'600'000'000'000ULL));
+      if (w.window_ns <= 0) w.window_ns = std::int64_t(3'600'000'000'000ULL);  // default 1h rolling window
       w.add(now, obs.amount);
       break;
     }
     case ObservationKind::TRANSFER_CONSUMED: {
       if (obs.dimension != ResourceDimension::TransferBytes) return QuotaStatus::failure(ViolationCode::INVALID_SHARED_ATTRIBUTION, "transfer consumed on wrong dimension");
-      u.windows[static_cast<std::size_t>(ResourceDimension::TransferBytes)].add(now, obs.amount);
+      auto& w = u.windows[static_cast<std::size_t>(ResourceDimension::TransferBytes)];
+      if (w.window_ns <= 0) w.window_ns = std::int64_t(3'600'000'000'000ULL);
+      w.add(now, obs.amount);
       break;
     }
     case ObservationKind::MODEL_RESIDENCY_ADDED: {
