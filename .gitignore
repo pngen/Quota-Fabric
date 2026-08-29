@@ -20,3 +20,7 @@ Thumbs.db
 *.exp
 *.dll
 *.lib
+bench_*.txt
+coord_*.txt
+qf_*.qf
+qf_*.qf.tmp
