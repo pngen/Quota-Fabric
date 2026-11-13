@@ -71,7 +71,14 @@ void RollingWindow::add(Nanos at, std::int64_t amount) {
   total = sat_add(total, amount);
   expire(at);
 }
-std::int64_t RollingWindow::usage(Nanos) const { return total; }
+std::int64_t RollingWindow::usage(Nanos now) const {
+  // Samples that have left the window no longer count, even before a new
+  // sample arrives to expire them.
+  const auto cutoff = now - window_ns;
+  std::int64_t in_window = total;
+  for (const auto& s : samples) { if (s.first > cutoff) break; in_window -= s.second; }
+  return in_window;
+}
 void RollingWindow::expire(Nanos now) {
   const auto cutoff = now - window_ns;
   while (!samples.empty() && samples.front().first <= cutoff) { total -= samples.front().second; samples.pop_front(); }
@@ -389,9 +396,10 @@ struct QuotaFabric::Impl {
   }
 
   bool burst_ok(ResourceDimension d, TenantId t, const ResourceQuota& eff, std::int64_t new_committed, std::int64_t soft) const {
-    (void)new_committed; (void)soft;
     const auto& u = usage(t);
     const std::int64_t burst_limit = eff.burst_limit.present(d) ? eff.burst_limit.get(d) : 0;
+    // The burst limit bounds everything held above soft after this request.
+    if (sat_sub(new_committed, soft) > burst_limit) return false;
     const Nanos now = mono_now_nanos();
     if (u.burst_active) {
       if (now >= u.burst_expires) return false;
